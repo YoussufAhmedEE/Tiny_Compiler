@@ -133,6 +133,7 @@ class NonTerminals:
         while((self.pointer<self.MaxPointerValue)and(self.TokenList[self.pointer].value== Tinylanguage.tiny_grammar["stmt_sequence"][0][1])):
             #store the semicolocn
             self.pointer+=1
+            
             self.statement()
         
             
@@ -162,4 +163,7 @@ class NonTerminals:
             if self.debug:
                 print("write statement")
             self.write_stmt()
+        else:
+            raise RuntimeError(" ") #mariam
+            
 
