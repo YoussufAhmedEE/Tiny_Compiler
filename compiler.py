@@ -3,7 +3,7 @@ from tkinter import filedialog
 from tkinter import Tk
 from FileHandler import FileHandler
 from scanner import Scanner
-
+from parser_tree import ScrollableCanvas
 # Global variable to store the file path after upload
 file_path = ""
 file_content = ""
@@ -20,7 +20,7 @@ def browse_file():
     if file_path:
         print(f"File selected: {file_path}")
         input_label.configure(text=f"Selected: {file_path.split('/')[-1]}")  # Update label to show file name
-        
+
         # Use FileHandler to read the file content
         try:
             file_content = FileHandler.read_file(file_path)
@@ -40,9 +40,8 @@ def scan_file():
         try:
             # Initialize the Scanner class and call the scan method
             scanner = Scanner(file_content)
-            scan_result = scanner.scan(file_path)  # Pass file_path to the scan method
             output_box2.delete(1.0, "end")  # Clear previous scan result
-            output_box2.insert("end", scan_result)  # Insert the scan result
+            output_box2.insert("end", str(scanner))  # Insert the scan result
         except Exception as e:
             output_box2.delete(1.0, "end")  # Clear the output box in case of error
             output_box2.insert("end", f"Error: {str(e)}")  # Display error message in output box
@@ -52,18 +51,19 @@ def scan_file():
 def reset_interface():
     global file_path  # Access the global file_path variable
     global file_content  # Access the global file_content variable
-    
+
     # Reset global variables
     file_path = ""
     file_content = ""
-    
+
     # Clear the output boxes
     output_box.delete(1.0, "end")  # Clear file content box
     output_box2.delete(1.0, "end")  # Clear scan result box
-    
+
+    output_box3.canvas.delete("all") # Clear tree
     # Reset the input label text
     input_label.configure(text="Input")  # Reset input label to default text
-    
+
     print("Reset clicked")  # Optionally log the reset action for debugging purposes
 
 
@@ -72,7 +72,7 @@ def reset_interface():
 # Initialize the app
 app = customtkinter.CTk()
 app.title("Parser Application")
-app.geometry("600x400")
+app.geometry("1200x800")
 
 # Input Section
 input_frame = customtkinter.CTkFrame(app)
@@ -122,23 +122,33 @@ output_frame.pack(pady=10, fill="x")
 
 # Configure the grid layout to have two columns
 output_frame.grid_columnconfigure(0, weight=1, minsize=250)  # Left column for Scan Results
-output_frame.grid_columnconfigure(1, weight=1, minsize=250)  # Right column for Parse Results
+output_frame.grid_columnconfigure(1, weight=1, minsize=800)  # Right column for Parse Results
 
 # Output Section for Scan Results (Left Side)
 output_label2 = customtkinter.CTkLabel(output_frame, text="Scan Results:")
 output_label2.grid(row=0, column=0, padx=10, pady=10, sticky="w")  # "w" aligns it to the left
 
-output_box2 = customtkinter.CTkTextbox(output_frame, width=300, height=150)  # Increased size
+output_box2 = customtkinter.CTkTextbox(output_frame, width=250, height=250)  # Increased size
 output_box2.grid(row=1, column=0, padx=10, pady=10, sticky="w")  # Align text box to the left
 
 # Output Section for Parse Results (Right Side)
 output_label3 = customtkinter.CTkLabel(output_frame, text="Parse Results:")
 output_label3.grid(row=0, column=1, padx=10, pady=10, sticky="e")  # "e" aligns it to the right
 
-output_box3 = customtkinter.CTkTextbox(output_frame, width=300, height=150)  # Increased size
-output_box3.grid(row=1, column=1, padx=10, pady=10, sticky="e")  # Align text box to the right
+output_box3 = ScrollableCanvas(output_frame, width=800, height=250)
+output_box3.grid(row=1, column=1, padx=10, pady=10, sticky="e")
+
+#################### TEST ########################
+# Draw shapes on the canvas
+output_box3.draw_square(100, 100, 50)
+output_box3.draw_square(300, 300, 80)
+output_box3.draw_circle(500, 150, 30)
+output_box3.draw_circle(700, 400, 40)
 
 
+# Update scroll region based on the drawn shapes
+output_box3.set_scroll_region()
+##################################################
 
 # Run the app
 app.mainloop()
