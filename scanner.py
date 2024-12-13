@@ -121,13 +121,13 @@ class Scanner:
         elif token:
             raise RuntimeError("Error: Unknown Parameter : ", token)
     
-
-
-
-def scan(file_path: str):
+    
+    
+    @staticmethod
+    def scan(file_path: str):
         import FileHandler as fh
         file_contents = fh.FileHandler.read_file(file_path)
         scanner_object = Scanner(file_contents)
-        fh.FileHandler.write_file("./", "Tokens.txt" ,scanner_object)
+        # fh.FileHandler.write_file("./", "Tokens.txt" ,scanner_object)
         return scanner_object.token_list
-        
+
