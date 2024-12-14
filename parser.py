@@ -1,4 +1,4 @@
-import scanner
+from scanner import Scanner 
 import  GrammerOfTinyLanguage as Tinylanguage
 from node import *
 #functions that recogniza non-terminals
@@ -39,7 +39,7 @@ from node import *
 class NonTerminals:
 
     def __init__(self,filepath):
-        self.TokenList = scanner.scan(filepath)
+        self.TokenList = Scanner.scan(filepath)
         self.pointer = 0
         self.MaxPointerValue = len(self.TokenList)-1
         self.debug = True #True :> for printing the statments
