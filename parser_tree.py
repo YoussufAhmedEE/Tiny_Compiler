@@ -96,8 +96,8 @@ class ScrollableCanvas(tk.Frame):
                     draw_subtree(child, prev_x, child_y, child_width)
                     if idx < len(child_list) - 1:
                         next_left_width = calculate_width_general(child_list[idx + 1].left)
-                        self.canvas.create_line(prev_x + node_size // 2, child_y, prev_x + (child_right_width + child_center_width) + next_left_width - node_size // 2 - gap, child_y, arrow="last")
-                        prev_x += next_left_width
+                        self.canvas.create_line(prev_x + node_size // 2, child_y, prev_x + (child_right_width + child_center_width) + max(next_left_width, node_size + 2 * gap) - node_size // 2 - gap, child_y, arrow="last")
+                        prev_x += max(next_left_width, node_size + 2 * gap)
                     prev_x += (child_right_width + child_center_width) - gap
 
             # Handle left child
@@ -146,7 +146,7 @@ class ScrollableCanvas(tk.Frame):
         # Update scroll region to fit the entire tree
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
-    def visualize_tree(root):
+    def visualize_tree(self, root):
         """Create a window to visualize the tree"""
         root_window = tk.Tk()
         root_window.title("Parse Tree Visualization")

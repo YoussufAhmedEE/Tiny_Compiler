@@ -12,23 +12,27 @@ class Node:
             return str(self.type)
 
     def print_tree(self, level=0):
+        final_str = []
         indent = "  " * level  # Indentation based on depth level
-        print(f"{indent}- {self.type}: {self.text}")
-
+        final_str.append(f"{indent}- {self.type}: {self.text}\n")
         # Helper function to recursively print child nodes
         def print_child(name, child, level):
+            minor_str = []
             if child:
-                print(f"{indent}  {name}:")
+                minor_str.append(f"{indent}  {name}:\n")
                 if isinstance(child, list):  # If the child is a list, iterate over its elements
                     for idx, node in enumerate(child):
-                        print(f"{indent}    [{idx}]")
-                        node.print_tree(level + 2)
+                        minor_str.append(f"{indent}    [{idx}]\n")
+                        minor_str.append(node.print_tree(level + 2))
                 else:  # If it's a single node, print it normally
-                    child.print_tree(level + 1)
+                    minor_str.append(child.print_tree(level + 1))
+            return "".join(st for st in minor_str)
         # Print left, center, and right
-        print_child("Left", self.left, level)
-        print_child("Center", self.center, level)
-        print_child("Right", self.right, level)
+        final_str.append(print_child("Left", self.left, level))
+        final_str.append(print_child("Center", self.center, level))
+        final_str.append(print_child("Right", self.right, level))
+
+        return "".join(st for st in final_str)
 
 class Statement(Node):
     def __init__(self, type, text, left, center, right):

@@ -1,45 +1,10 @@
 from scanner import Scanner
 import  GrammerOfTinyLanguage as Tinylanguage
 from node import *
-#functions that recogniza non-terminals
 
-
-#
-#
-# import traceback
-# import types
-#
-# import inspect
-#
-# def get_function_stack():
-#     # Extracts a clean list of function names in the call stack
-#     stack = inspect.stack()
-#     return [frame.function for frame in stack[1:]]  # Skip the current 'get_function_stack'
-#
-# def wrap_function(func):
-#     def wrapper(*args, **kwargs):
-#         stack = get_function_stack()
-#         stack = [s for s in stack if s != "wrapper"]
-#         print(f"\nCall Stack: {stack}")
-#         try:
-#             print(args[0].TokenList[args[0].pointer])
-#         except:
-#             pass
-#         return func(*args, **kwargs)
-#     return wrapper
-#
-# def auto_wrap_class_methods(cls):
-#     for attr_name, attr_value in vars(cls).items():
-#         if isinstance(attr_value, types.FunctionType):  # Check if it's a method
-#             setattr(cls, attr_name, wrap_function(attr_value))
-#     return cls
-#
-# # Example: Automatically wrapping all methods in the class
-# @auto_wrap_class_methods
 class NonTerminals:
-
-    def __init__(self,filepath):
-        self.TokenList = Scanner.scan(filepath)
+    def __init__(self, file_contents):
+        self.TokenList = Scanner(file_contents).token_list
         self.pointer = 0
         self.MaxPointerValue = len(self.TokenList)-1
         self.debug = True #True :> for printing the statments

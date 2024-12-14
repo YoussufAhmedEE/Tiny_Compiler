@@ -10,144 +10,68 @@ file_path = ""
 file_content = ""
 
 
-def parse_file():
-    global file_path
-    global file_content
-    global output_box3  # Reference to the scrollable canvas for tree visualization
+def parse_input():
+    global input_box
+    global syntax_tree_canvas  # Reference to the scrollable canvas for tree visualization
 
-    if file_path:
+    file_content = input_box.get("0.0", "end").strip()
+    if file_content:
         try:
-            # Initialize the NonTerminals class and parse the file
-            parser = NonTerminals(file_path)
+            parser = NonTerminals(file_content)
             parser.parse()
 
             # Clear previous tree visualization
-            output_box3.canvas.delete("all")
-            #
-            # # Visualize the parse tree
-            # def draw_parse_tree(canvas, node, x=400, y=50, x_spread=200):
-            #     """Recursively draw the parse tree"""
-            #     if not node:
-            #         return
-            #
-            #     # Draw the current node
-            #     node_shape = canvas.draw_node_shape(x, y, node.type or 'Root')
-            #
-            #     # Display node type and text
-            #     type_text = str(node.type or 'Root')
-            #     value_text = str(node.text or '')
-            #
-            #     # Combine type and text if text is not None
-            #     display_text = type_text if not value_text else f"{type_text}: {value_text}"
-            #     canvas.canvas.create_text(x, y, text=display_text, font=('Arial', 10))
-            #
-            #     # Recursive drawing of children
-            #     def draw_children(children, start_x, y_offset):
-            #         if not children:
-            #             return
-            #
-            #         # If children is a list (like in stmt_sequence)
-            #         if isinstance(children, list):
-            #             child_spread = max(100, x_spread // (len(children) + 1))
-            #             for i, child in enumerate(children):
-            #                 child_x = start_x + (i - len(children)//2) * child_spread
-            #
-            #                 # Draw connection line
-            #                 canvas.canvas.create_line(x, y+25, child_x, y+y_offset-25, arrow=tk.LAST)
-            #
-            #                 # Recursively draw child
-            #                 draw_parse_tree(canvas, child, child_x, y+y_offset, child_spread)
-            #
-            #         # If children is a single node
-            #         else:
-            #             # Draw connection line
-            #             canvas.canvas.create_line(x, y+25, start_x, y+y_offset-25, arrow=tk.LAST)
-            #
-            #             # Recursively draw child
-            #             draw_parse_tree(canvas, children, start_x, y+y_offset, x_spread//2)
-            #
-            #     # Draw left, center, and right children
-            #     draw_children(node.left, x - x_spread, 100)
-            #     draw_children(node.center, x, 100)
-            #     draw_children(node.right, x + x_spread, 100)
+            print(parser.root.print_tree())
+            output_box.delete(1.0, "end")
+            output_box.insert("end", "Parse Tree Structure:\n")
+            output_box.insert("end", parser.root.print_tree())
 
-            # Start drawing from the root
-            output_box3.draw_parse_tree(output_box3, parser.root)
+            syntax_tree_canvas.canvas.delete("all")
+            syntax_tree_canvas.visualize_tree(parser.root)
 
-            # Update scroll region
-            output_box3.canvas.config(scrollregion=output_box3.canvas.bbox("all"))
-
-            # Optional: print the tree structure to output box for additional information
-            output_box2.delete(1.0, "end")
-
-            # Capture print_tree output
-            import io
-            import sys
-
-            # Redirect stdout to capture print_tree output
-            old_stdout = sys.stdout
-            result = io.StringIO()
-            sys.stdout = result
-
-            parser.root.print_tree()
-
-            # Restore stdout and get output
-            sys.stdout = old_stdout
-            tree_structure = result.getvalue()
-
-            output_box2.insert("end", "Parse Tree Structure:\n")
-            output_box2.insert("end", tree_structure)
 
         except Exception as e:
-            output_box2.delete(1.0, "end")
-            output_box2.insert("end", f"Parse Error: {str(e)}")
-
-
-def parse_file2():
-    parser = NonTerminals(file_path)
-    parser.parse()
-    ScrollableCanvas.visualize_tree(parser.root)
-
+            output_box.delete(1.0, "end")
+            output_box.insert("end", f"Parse Error: {str(e)}")
 
 # Function to handle file browsing
 def browse_file():
     global file_path  # Use the global file_path variable
     global file_content # Use the global file_content variable
     # Open a file dialog to browse files
-    # file_path = filedialog.askopenfilename(
-    #     title="Select a File",
-    #     filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
-    # )
+    file_path = filedialog.askopenfilename(
+        title="Select a File",
+        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+    )
 
-    file_path = "test.txt"
     if file_path:
         print(f"File selected: {file_path}")
-        input_label.configure(text=f"Selected: {file_path.split('/')[-1]}")  # Update label to show file name
+        upload_label.configure(text=f"Selected: {file_path.split('/')[-1]}")  # Update label to show file name
 
         # Use FileHandler to read the file content
         try:
             file_content = FileHandler.read_file(file_path)
             # Display the file content in the output box
-            output_box.delete(1.0, "end")  # Clear the previous content
-            output_box.insert("end", file_content)  # Insert the new file content
+            input_box.delete(1.0, "end")  # Clear the previous content
+            input_box.insert("end", file_content)  # Insert the new file content
         except Exception as e:
-            output_box.delete(1.0, "end")  # Clear the output box in case of error
-            output_box.insert("end", f"Error: {str(e)}")  # Display error message in output box
+            input_box.delete(1.0, "end")  # Clear the output box in case of error
+            input_box.insert("end", f"Error: {str(e)}")  # Display error message in output box
 
 
 # Function to handle scanning the file
-def scan_file():
-    global file_path  # Access the global file_path variable
-    global file_content
-    if file_path:
+def scan_input():
+    global input_box
+    file_content = input_box.get("0.0", "end").strip()
+    if file_content:
         try:
             # Initialize the Scanner class and call the scan method
             scanner = Scanner(file_content)
-            output_box2.delete(1.0, "end")  # Clear previous scan result
-            output_box2.insert("end", str(scanner))  # Insert the scan result
+            output_box.delete(1.0, "end")  # Clear previous scan result
+            output_box.insert("end", str(scanner))  # Insert the scan result
         except Exception as e:
-            output_box2.delete(1.0, "end")  # Clear the output box in case of error
-            output_box2.insert("end", f"Error: {str(e)}")  # Display error message in output box
+            output_box.delete(1.0, "end")  # Clear the output box in case of error
+            output_box.insert("end", f"Error: {str(e)}")  # Display error message in output box
 
 
 # Function to reset the interface
@@ -160,98 +84,64 @@ def reset_interface():
     file_content = ""
 
     # Clear the output boxes
-    output_box.delete(1.0, "end")  # Clear file content box
+    input_box.delete(1.0, "end")  # Clear file content box
     output_box2.delete(1.0, "end")  # Clear scan result box
-
-    output_box3.canvas.delete("all") # Clear tree
-    # Reset the input label text
-    input_label.configure(text="Input")  # Reset input label to default text
-
-    print("Reset clicked")  # Optionally log the reset action for debugging purposes
-
-
+    syntax_tree_canvas.canvas.delete("all") # Clear tree
+    upload_label.configure(text="Upload input:")  # Reset input label to default text
 
 
 # Initialize the app
 app = customtkinter.CTk()
 app.title("Parser Application")
-app.geometry("1200x800")
+app.geometry("1200x500")
 
-# Input Section
-input_frame = customtkinter.CTkFrame(app)
-input_frame.pack(pady=30, fill="x")
+# ================= Layout Structure =================
 
-# Configure grid layout for input_frame
-input_frame.grid_columnconfigure(0, weight=1)
+# Configure main grid layout (3 columns: buttons, output_box, output_box2)
+app.grid_columnconfigure(0, weight=1)  # Left section for buttons
+app.grid_columnconfigure(1, weight=2)  # Center section for output_box
+app.grid_columnconfigure(2, weight=2)  # Right section for output_box2
 
-# Inner Frame for Centering Label and Button
-center_frame = customtkinter.CTkFrame(input_frame)
-center_frame.grid(row=0, column=0)
+# ================= Left Section: Buttons =================
+button_frame = customtkinter.CTkFrame(app)
+button_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsw")
 
-# Input Label
-input_label = customtkinter.CTkLabel(center_frame, text="Input")
-input_label.grid(row=0, column=0, padx=10)
+# Buttons inside button_frame
+upload_label = customtkinter.CTkLabel(button_frame, text="Upload input:")
+upload_label.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="nsw")
 
-# Upload Button
-upload_button = customtkinter.CTkButton(center_frame, text="Upload", command=browse_file)
-upload_button.grid(row=0, column=1, padx=10)
+upload_button = customtkinter.CTkButton(button_frame, text="Upload", command=browse_file)
+upload_button.grid(row=1, column=0, padx=0, pady=(0, 50), sticky="nsw")
 
+scan_button = customtkinter.CTkButton(button_frame, text="Scan", command=scan_input)
+scan_button.grid(row=2, column=0, padx=0, pady=(10, 10), sticky="nsw")
 
-# Action Section
-action_frame = customtkinter.CTkFrame(app)
-action_frame.pack(pady=10, fill="x")
+parse_button = customtkinter.CTkButton(button_frame, text="Parse", command=parse_input)
+parse_button.grid(row=3, column=0, padx=0, pady=(10, 10), sticky="nsw")
 
-# Scan Button
-scan_button = customtkinter.CTkButton(action_frame, text="Scan", command=scan_file)  # Call scan_file function
-scan_button.pack(side="left", padx=10)
+reset_button = customtkinter.CTkButton(button_frame, text="Reset", command=reset_interface)
+reset_button.grid(row=4, column=0, padx=0, pady=(220, 10), sticky="nsw")
 
-parse_button = customtkinter.CTkButton(action_frame, text="Parse",command= parse_file2)
-parse_button.pack(side="left", padx=10)
+# ================= Center Section: Output Box =================
+center_frame = customtkinter.CTkFrame(app)
+center_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
-# Reset Button with functionality to call the reset_interface function
-reset_button = customtkinter.CTkButton(action_frame, text="Reset", command=reset_interface)
-reset_button.pack(side="right", padx=10)
+input_label = customtkinter.CTkLabel(center_frame, text="File Content: Start typing in TINY, or upload a file.")
+input_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-# Output Section
-output_label = customtkinter.CTkLabel(app, text="File Content:")
-output_label.pack(pady=10)
+input_box = customtkinter.CTkTextbox(center_frame, width=500, height=400)
+input_box.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-output_box = customtkinter.CTkTextbox(app, width=500, height=100)
-output_box.pack(pady=40)
-
-# Output Section for Scan Results and Parse Results
+# ================= Right Section: Output Box 2 =================
 output_frame = customtkinter.CTkFrame(app)
-output_frame.pack(pady=10, fill="x")
+output_frame.grid(row=0, column=2, padx=20, pady=20, sticky="nse")
 
-# Configure the grid layout to have two columns
-output_frame.grid_columnconfigure(0, weight=1, minsize=250)  # Left column for Scan Results
-output_frame.grid_columnconfigure(1, weight=1, minsize=800)  # Right column for Parse Results
+output_label = customtkinter.CTkLabel(output_frame, text="Scan/Parse Results:")
+output_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-# Output Section for Scan Results (Left Side)
-output_label2 = customtkinter.CTkLabel(output_frame, text="Scan Results:")
-output_label2.grid(row=0, column=0, padx=10, pady=10, sticky="w")  # "w" aligns it to the left
+output_box = customtkinter.CTkTextbox(output_frame, width=400, height=400)
+output_box.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-output_box2 = customtkinter.CTkTextbox(output_frame, width=250, height=250)  # Increased size
-output_box2.grid(row=1, column=0, padx=10, pady=10, sticky="w")  # Align text box to the left
-
-# Output Section for Parse Results (Right Side)
-# output_label3 = customtkinter.CTkLabel(output_frame, text="Parse Results:")
-# output_label3.grid(row=0, column=1, padx=10, pady=10, sticky="e")  # "e" aligns it to the right
-
-# output_box3 = ScrollableCanvas(output_frame, width=800, height=250)
-# output_box3.grid(row=1, column=1, padx=10, pady=10, sticky="e")
-
-#################### TEST ########################
-# Draw shapes on the canvas
-# output_box3.draw_square(100, 100, 50)
-# output_box3.draw_square(300, 300, 80)
-# output_box3.draw_circle(500, 150, 30)
-# output_box3.draw_circle(700, 400, 40)
-
-
-# Update scroll region based on the drawn shapes
-# output_box3.set_scroll_region()
-##################################################
-
-# Run the app
+syntax_tree_canvas = ScrollableCanvas(output_frame)
+# ================= Start the Application =================# Run the app
 app.mainloop()
