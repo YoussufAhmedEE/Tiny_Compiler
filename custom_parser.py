@@ -6,7 +6,7 @@ class NonTerminals:
     def __init__(self, file_contents):
         self.TokenList = Scanner(file_contents).token_list
         self.pointer = 0
-        self.MaxPointerValue = len(self.TokenList)-1
+        self.MaxPointerValue = len(self.TokenList)
         self.debug = True #True :> for printing the statments
         self.root = Node(None, None, None, None, None)
 
@@ -20,7 +20,7 @@ class NonTerminals:
 
     def parse(self):
         self.root.center = self.stmt_sequence()
-        if self.pointer <= self.MaxPointerValue:
+        if self.pointer < self.MaxPointerValue:
             raise RuntimeError("Invalid TINY. Probably a missing/an extra semicolon.")
 
     def increment_ptr(self):
@@ -57,7 +57,7 @@ class NonTerminals:
                 op.left = fac
                 self.increment_ptr()
                 op.right = self.factor()
-                return op
+                fac = op
         return fac
 
     def simple_exp(self):
@@ -68,8 +68,11 @@ class NonTerminals:
                 op.text = self.TokenList[self.pointer].value
                 op.left = fac
                 self.increment_ptr()
+                print("SIMPLE EXP DETECTED")
                 op.right = self.term()
-                return op
+                fac = op
+
+
         return fac
 
     def exp(self):
@@ -81,7 +84,7 @@ class NonTerminals:
                 op.left = fac
                 self.increment_ptr()
                 op.right = self.simple_exp()
-                return op
+                fac = op
         return fac
 
     def write_stmt(self):
