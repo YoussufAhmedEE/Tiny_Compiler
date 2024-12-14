@@ -1,9 +1,20 @@
 read x; {input an integer }
-if 0 < x then { don’t compute if x <= 0 }
+if 0 < x then { don't compute if x <= 0 }
 fact := 1;
 repeat
 fact := fact * x;
-x := x - 1
-until x = 0;
-write fact { output factorial of x }
-end
+x := x - 1;
+y := x;
+z := y;
+c := z;
+y := x
+until x = 12 * 3 + 4;
+write fact + ((y + 3 )* 2) { output factorial of x }
+end;
+write z;
+write (x + y) + z;
+repeat
+read x;
+write ((y + 3 )* 2) + ((y + 3 )* 2)
+until x = 12;
+write (3 * 2)
