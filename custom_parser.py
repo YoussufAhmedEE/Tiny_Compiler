@@ -21,7 +21,7 @@ class NonTerminals:
     def parse(self):
         self.root.center = self.stmt_sequence()
         if self.pointer <= self.MaxPointerValue:
-            raise RuntimeError("Invalid TINY. Probably a missing semicolon.")
+            raise RuntimeError("Invalid TINY. Probably a missing/an extra semicolon.")
 
     def increment_ptr(self):
         self.pointer += 1

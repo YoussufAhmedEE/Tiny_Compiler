@@ -14,7 +14,8 @@ class Node:
     def print_tree(self, level=0):
         final_str = []
         indent = "  " * level  # Indentation based on depth level
-        final_str.append(f"{indent}- {self.type}: {self.text}\n")
+        if(self.type):
+            final_str.append(f"{indent}- {self.type}: {self.text}\n")
         # Helper function to recursively print child nodes
         def print_child(name, child, level):
             minor_str = []

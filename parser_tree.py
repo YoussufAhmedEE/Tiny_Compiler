@@ -77,8 +77,9 @@ class ScrollableCanvas(tk.Frame):
                 return x
 
             # Draw the current node
-            node_id = self.draw_node_shape(x, y, node.type, size=node_size)
-            self.canvas.create_text(x, y, text=str(node), font=("Arial", 12))
+            if (node.type):
+                node_id = self.draw_node_shape(x, y, node.type, size=node_size)
+                self.canvas.create_text(x, y, text=str(node), font=("Arial", 12))
             left_width = calculate_width_general(node.left)
             center_width = calculate_width_general(node.center)
             right_width = calculate_width_general(node.right)
@@ -105,38 +106,44 @@ class ScrollableCanvas(tk.Frame):
                 if isinstance(node.left, list) and len(node.left) >= 2:
                     child_x = x - left_width + calculate_width_general(node.left[0]) // 2 #current_x + left_width // 2
                     draw_child_list(node.left, child_x, child_y)
-                    self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                    if node.type:
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
                 else:
                     if isinstance(node.left, list):
                         node.left = node.left[0]
                     child_x = x - left_width // 2 #current_x + left_width // 2
                     draw_subtree(node.left, child_x, child_y, left_width)
-                    self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                    if node.type:
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
 
             # Handle center child
             if node.center:
                 child_x = x #current_x + left_width // 2
                 if isinstance(node.center, list) and len(node.center) >= 2:
                     draw_child_list(node.center, child_x, child_y)
-                    self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                    if node.type:
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
                 else:
                     if isinstance(node.center, list):
                         node.center = node.center[0]
                     draw_subtree(node.center, child_x, child_y, center_width)
-                    self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                    if node.type:
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
 
             # Handle right child
             if node.right:
                 if isinstance(node.right, list) and len(node.right) >= 2:
                     child_x = x + center_width #current_x + left_width // 2
-                    self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                    if node.type:
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
                     draw_child_list(node.right, child_x, child_y)
                 else:
                     if isinstance(node.right, list):
                         node.right = node.right[0]
                     child_x = x + center_width + right_width // 2#current_x + left_width // 2
                     draw_subtree(node.right, child_x, child_y, right_width)
-                    self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                    if node.type:
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
 
             return x
 
