@@ -1,4 +1,4 @@
-from scanner import Scanner 
+from scanner import Scanner
 import  GrammerOfTinyLanguage as Tinylanguage
 from node import *
 #functions that recogniza non-terminals
@@ -174,10 +174,9 @@ class NonTerminals:
             stmt.left = self.exp()
             if(self.TokenList[self.pointer].value== Tinylanguage.tiny_grammar["if_stmt"][0][2]):
                 self.increment_ptr()
-                stmt.right = self.stmt_sequence()
+                stmt.center = self.stmt_sequence()
                 if(self.TokenList[self.pointer].value== Tinylanguage.tiny_grammar["if_stmt"][1][4]):
                     self.increment_ptr()
-                    stmt.center = stmt.right
                     stmt.right = self.stmt_sequence()
                     if(self.TokenList[self.pointer].value== Tinylanguage.tiny_grammar["if_stmt"][1][6]):
                         self.increment_ptr()
