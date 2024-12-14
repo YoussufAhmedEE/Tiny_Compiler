@@ -5,8 +5,11 @@ class Node:
         self.left = left
         self.center = center
         self.right = right
-    # def __str__(self):
-    #     return f"{self.type}, {self.text}, {self.left}, {self.center}, {self.right}"
+    def __str__(self):
+        if self.text:
+            return f"{self.type}\n({self.text})"
+        else:
+            return str(self.type)
 
     def print_tree(self, level=0):
         indent = "  " * level  # Indentation based on depth level

@@ -4,7 +4,7 @@ from tkinter import Tk
 from FileHandler import FileHandler
 from scanner import Scanner
 from parser_tree import ScrollableCanvas
-from  parser import NonTerminals  # Assuming you'll rename the parser file
+from custom_parser import NonTerminals  # Assuming you'll rename the parser file
 # Global variable to store the file path after upload
 file_path = ""
 file_content = ""
@@ -23,78 +23,78 @@ def parse_file():
 
             # Clear previous tree visualization
             output_box3.canvas.delete("all")
-
-            # Visualize the parse tree
-            def draw_parse_tree(canvas, node, x=400, y=50, x_spread=200):
-                """Recursively draw the parse tree"""
-                if not node:
-                    return
-
-                # Draw the current node
-                node_shape = canvas.draw_node_shape(x, y, node.type or 'Root')
-                
-                # Display node type and text
-                type_text = str(node.type or 'Root')
-                value_text = str(node.text or '')
-                
-                # Combine type and text if text is not None
-                display_text = type_text if not value_text else f"{type_text}: {value_text}"
-                canvas.canvas.create_text(x, y, text=display_text, font=('Arial', 10))
-
-                # Recursive drawing of children
-                def draw_children(children, start_x, y_offset):
-                    if not children:
-                        return
-                    
-                    # If children is a list (like in stmt_sequence)
-                    if isinstance(children, list):
-                        child_spread = max(100, x_spread // (len(children) + 1))
-                        for i, child in enumerate(children):
-                            child_x = start_x + (i - len(children)//2) * child_spread
-                            
-                            # Draw connection line
-                            canvas.canvas.create_line(x, y+25, child_x, y+y_offset-25, arrow=tk.LAST)
-                            
-                            # Recursively draw child
-                            draw_parse_tree(canvas, child, child_x, y+y_offset, child_spread)
-                    
-                    # If children is a single node
-                    else:
-                        # Draw connection line
-                        canvas.canvas.create_line(x, y+25, start_x, y+y_offset-25, arrow=tk.LAST)
-                        
-                        # Recursively draw child
-                        draw_parse_tree(canvas, children, start_x, y+y_offset, x_spread//2)
-
-                # Draw left, center, and right children
-                draw_children(node.left, x - x_spread, 100)
-                draw_children(node.center, x, 100)
-                draw_children(node.right, x + x_spread, 100)
+            #
+            # # Visualize the parse tree
+            # def draw_parse_tree(canvas, node, x=400, y=50, x_spread=200):
+            #     """Recursively draw the parse tree"""
+            #     if not node:
+            #         return
+            #
+            #     # Draw the current node
+            #     node_shape = canvas.draw_node_shape(x, y, node.type or 'Root')
+            #
+            #     # Display node type and text
+            #     type_text = str(node.type or 'Root')
+            #     value_text = str(node.text or '')
+            #
+            #     # Combine type and text if text is not None
+            #     display_text = type_text if not value_text else f"{type_text}: {value_text}"
+            #     canvas.canvas.create_text(x, y, text=display_text, font=('Arial', 10))
+            #
+            #     # Recursive drawing of children
+            #     def draw_children(children, start_x, y_offset):
+            #         if not children:
+            #             return
+            #
+            #         # If children is a list (like in stmt_sequence)
+            #         if isinstance(children, list):
+            #             child_spread = max(100, x_spread // (len(children) + 1))
+            #             for i, child in enumerate(children):
+            #                 child_x = start_x + (i - len(children)//2) * child_spread
+            #
+            #                 # Draw connection line
+            #                 canvas.canvas.create_line(x, y+25, child_x, y+y_offset-25, arrow=tk.LAST)
+            #
+            #                 # Recursively draw child
+            #                 draw_parse_tree(canvas, child, child_x, y+y_offset, child_spread)
+            #
+            #         # If children is a single node
+            #         else:
+            #             # Draw connection line
+            #             canvas.canvas.create_line(x, y+25, start_x, y+y_offset-25, arrow=tk.LAST)
+            #
+            #             # Recursively draw child
+            #             draw_parse_tree(canvas, children, start_x, y+y_offset, x_spread//2)
+            #
+            #     # Draw left, center, and right children
+            #     draw_children(node.left, x - x_spread, 100)
+            #     draw_children(node.center, x, 100)
+            #     draw_children(node.right, x + x_spread, 100)
 
             # Start drawing from the root
-            draw_parse_tree(output_box3, parser.root)
-            
+            output_box3.draw_parse_tree(output_box3, parser.root)
+
             # Update scroll region
             output_box3.canvas.config(scrollregion=output_box3.canvas.bbox("all"))
 
             # Optional: print the tree structure to output box for additional information
             output_box2.delete(1.0, "end")
-            
+
             # Capture print_tree output
             import io
             import sys
-            
+
             # Redirect stdout to capture print_tree output
             old_stdout = sys.stdout
             result = io.StringIO()
             sys.stdout = result
-            
+
             parser.root.print_tree()
-            
+
             # Restore stdout and get output
             sys.stdout = old_stdout
             tree_structure = result.getvalue()
-            
+
             output_box2.insert("end", "Parse Tree Structure:\n")
             output_box2.insert("end", tree_structure)
 
@@ -103,7 +103,7 @@ def parse_file():
             output_box2.insert("end", f"Parse Error: {str(e)}")
 
 
-def parse_file2():  
+def parse_file2():
     parser = NonTerminals(file_path)
     parser.parse()
     ScrollableCanvas.visualize_tree(parser.root)
@@ -114,10 +114,12 @@ def browse_file():
     global file_path  # Use the global file_path variable
     global file_content # Use the global file_content variable
     # Open a file dialog to browse files
-    file_path = filedialog.askopenfilename(
-        title="Select a File",
-        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
-    )
+    # file_path = filedialog.askopenfilename(
+    #     title="Select a File",
+    #     filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+    # )
+
+    file_path = "test.txt"
     if file_path:
         print(f"File selected: {file_path}")
         input_label.configure(text=f"Selected: {file_path.split('/')[-1]}")  # Update label to show file name
