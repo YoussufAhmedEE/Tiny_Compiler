@@ -85,7 +85,7 @@ def reset_interface():
 
     # Clear the output boxes
     input_box.delete(1.0, "end")  # Clear file content box
-    output_box2.delete(1.0, "end")  # Clear scan result box
+    output_box.delete(1.0, "end")  # Clear scan result box
     syntax_tree_canvas.canvas.delete("all") # Clear tree
     upload_label.configure(text="Upload input:")  # Reset input label to default text
 
