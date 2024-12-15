@@ -92,7 +92,7 @@ def reset_interface():
 
 # Initialize the app
 app = customtkinter.CTk()
-app.title("Parser Application")
+app.title("Compiler Application")
 app.geometry("1200x500")
 
 # ================= Layout Structure =================

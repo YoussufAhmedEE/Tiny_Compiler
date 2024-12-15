@@ -39,7 +39,7 @@ class ScrollableCanvas(tk.Frame):
         }
         fill_color = colors.get(node_type, "lightyellow")
 
-        if node_type in ["op", "factor"]:
+        if node_type in ["op", "factor","id","const"]:
             return self.canvas.create_oval(x - size//2, y - size//2,
                                            x + size//2, y + size//2,
                                            fill=fill_color, outline="black")
@@ -107,7 +107,7 @@ class ScrollableCanvas(tk.Frame):
                             print("CHILD: ", str(child), prev_x, child_y, child_right_width)
 
                         next_width = calculate_width_general(next_child)
-                        self.canvas.create_line(prev_x + node_size // 2, child_y, prev_x + (child_right_width + child_center_width) + next_left_width + next_center_width // 2 - node_size // 2 - gap, child_y, arrow="last")
+                        self.canvas.create_line(prev_x + node_size // 2, child_y, prev_x + (child_right_width + child_center_width) + next_left_width + next_center_width // 2 - node_size // 2 - gap, child_y, arrow="none")
                         prev_x += next_left_width + next_center_width // 2
                     prev_x += (child_right_width + child_center_width) - gap
 
@@ -117,14 +117,14 @@ class ScrollableCanvas(tk.Frame):
                     child_x = x - left_width + calculate_width_general(node.left[0]) // 2 #current_x + left_width // 2
                     draw_child_list(node.left, child_x, child_y)
                     if node.type:
-                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="none")
                 else:
                     if isinstance(node.left, list):
                         node.left = node.left[0]
                     child_x = x - left_width // 2 #current_x + left_width // 2
                     draw_subtree(node.left, child_x, child_y, left_width)
                     if node.type:
-                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="none")
 
             # Handle center child
             if node.center:
@@ -132,13 +132,13 @@ class ScrollableCanvas(tk.Frame):
                 if isinstance(node.center, list) and len(node.center) >= 2:
                     draw_child_list(node.center, child_x, child_y)
                     if node.type:
-                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="none")
                 else:
                     if isinstance(node.center, list):
                         node.center = node.center[0]
                     draw_subtree(node.center, child_x, child_y, center_width)
                     if node.type:
-                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="none")
 
             # Handle right child
             if node.right:
@@ -146,7 +146,7 @@ class ScrollableCanvas(tk.Frame):
                 if isinstance(node.right, list) and len(node.right) >= 2:
                     child_x = x + center_width + calculate_width_general(node.right[0]) // 2 #current_x + left_width // 2
                     if node.type:
-                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="none")
                     draw_child_list(node.right, child_x, child_y)
                 else:
                     if isinstance(node.right, list):
@@ -154,7 +154,7 @@ class ScrollableCanvas(tk.Frame):
                     child_x = x + center_width + right_width // 2#current_x + left_width // 2
                     draw_subtree(node.right, child_x, child_y, right_width)
                     if node.type:
-                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="last")
+                        self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="none")
 
             return x
 
