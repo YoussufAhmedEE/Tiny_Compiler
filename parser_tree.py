@@ -113,15 +113,18 @@ class ScrollableCanvas(tk.Frame):
 
             # Handle left child
             if node.left:
+                # child_center_width = calculate_width_general(node.center)
+                child_center_width = calculate_width_general(node.center[0]) // 2 if isinstance(node.center, list) else calculate_width_general(node.center) // 2
+
                 if isinstance(node.left, list) and len(node.left) >= 2:
-                    child_x = x - left_width + calculate_width_general(node.left[0]) // 2 #current_x + left_width // 2
+                    child_x = x - left_width - child_center_width + calculate_width_general(node.left[0]) // 2 #current_x + left_width // 2
                     draw_child_list(node.left, child_x, child_y)
                     if node.type:
                         self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="none")
                 else:
                     if isinstance(node.left, list):
                         node.left = node.left[0]
-                    child_x = x - left_width // 2 #current_x + left_width // 2
+                    child_x = x - child_center_width - left_width // 2 #current_x + left_width // 2
                     draw_subtree(node.left, child_x, child_y, left_width)
                     if node.type:
                         self.canvas.create_line(x, y + node_size // 2, child_x, child_y - node_size // 2, arrow="none")
